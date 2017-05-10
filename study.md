@@ -38,25 +38,22 @@ onChange 事件:	不需要 onBlur 去触发
 
 ##  二、组件
 ###  基本概念：
-props  	组件属性
-state   组件可看成一个“状态机”，state组件当前状态，通过this.setState()
-方法更新设置state，将调用render重新渲染UI
-划分状态数据（什么数据属性可以当做状态：)
-无状态组件
+	props  	组件属性
+	state   组件可看成一个“状态机”，state组件当前状态，通过this.setState()方法更新设置state，将调用render重新渲染UI
+	划分状态数据（什么数据属性可以当做状态：)
+	无状态组件
 
 ###  生命周期：
 有7个方法根据执行时机，可分为3类：（组件挂载、组件更新、组件移除）
 
 #### BASH
->执行时机：
->Mount：已插入真实 DOM；Update：正在被重新渲染；Unmount：已移出真实 DOM
-
->两种类型处理函数：
->will 函数在进入状态之前调用，did 函数在进入状态之后调用
-
->两个特殊状态处理函数:
->componentWillReceiveProps(object nextProps)：已加载组件收到新的参数时调用
->shouldComponentUpdate(object nextProps, object nextState)：组件判断是否重新渲染时调用
+    执行时机：
+	Mount：已插入真实 DOM；Update：正在被重新渲染；Unmount：已移出真实 DOM
+	两种类型处理函数：
+	will 函数在进入状态之前调用，did 函数在进入状态之后调用
+	两个特殊状态处理函数:
+	componentWillReceiveProps(object nextProps)：已加载组件收到新的参数时调用
+	shouldComponentUpdate(object nextProps, object nextState)：组件判断是否重新渲染时调用
 
 #### 7个生命周期方法：
 	组件挂载：
@@ -65,7 +62,7 @@ state   组件可看成一个“状态机”，state组件当前状态，通过t
 	组件更新：
 	*componentWillReceiveProps	初始化渲染不会调用，在接收到新的props时，会调用这个方法
 	*shouldComponentUpdate		初始化渲染不会调用，接收到新的props或state时调用
-	componentWillUpdate		初始化渲染不会调用，更新前调用
+	componentWillUpdate			初始化渲染不会调用，更新前调用
 	componentDidUpdate			初始化渲染不会调用，更新后调用
 	组件卸载：
 	componentWillUnmount		组件移除前调用（例如清除内存，解除事件的监听） 
