@@ -6,9 +6,8 @@
 - [二、组件](#%E4%BA%8C%E3%80%81%E7%BB%84%E4%BB%B6)
 	- [基本概念：](#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%EF%BC%9A)
 	- [生命周期：](#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%EF%BC%9A)
-		- [组件挂载：](#%E7%BB%84%E4%BB%B6%E6%8C%82%E8%BD%BD%EF%BC%9A)
-		- [组件更新：](#%E7%BB%84%E4%BB%B6%E6%9B%B4%E6%96%B0%EF%BC%9A)
-		- [组件卸载：](#%E7%BB%84%E4%BB%B6%E5%8D%B8%E8%BD%BD%EF%BC%9A)
+		- [BASH](#bash)
+		- [7个生命周期方法：](#7%E4%B8%AA%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%96%B9%E6%B3%95%EF%BC%9A)
 	- [事件](#%E4%BA%8B%E4%BB%B6)
 	- [DOM操作](#dom%E6%93%8D%E4%BD%9C)
 	- [组合组件](#%E7%BB%84%E5%90%88%E7%BB%84%E4%BB%B6)
@@ -40,42 +39,48 @@ onChange 事件:	不需要 onBlur 去触发
 ##  二、组件
 ###  基本概念：
 props  	组件属性
-state   组件可看成一个“状态机”，state组件当前状态，通过this.setState()方法更新设置state，将调用render重新渲染UI
-划分状态数据（什么数据属性可以当做状态：）
+state   组件可看成一个“状态机”，state组件当前状态，通过this.setState()
+方法更新设置state，将调用render重新渲染UI
+划分状态数据（什么数据属性可以当做状态：)
 无状态组件
 
 ###  生命周期：
 有7个方法根据执行时机，可分为3类：（组件挂载、组件更新、组件移除）
-执行时机：
-Mount：已插入真实 DOM；Update：正在被重新渲染；Unmount：已移出真实 DOM
-两种类型处理函数：
-will 函数在进入状态之前调用，did 函数在进入状态之后调用
-两个特殊状态处理函数
-componentWillReceiveProps(object nextProps)：已加载组件收到新的参数时调用
-shouldComponentUpdate(object nextProps, object nextState)：组件判断是否重新渲染时调用
 
-#####  组件挂载：
-componentWillMount			渲染前调用一次，这个时候DOM结构还没有渲染
-componentDidMount			渲染完成后调用一次，这个时候DOM结构已经渲染了
-#####  组件更新：
-*componentWillReceiveProps	初始化渲染不会调用，在接收到新的props时，会调用这个方法
-*shouldComponentUpdate		初始化渲染不会调用，接收到新的props或state时调用
-componentWillUpdate			初始化渲染不会调用，更新前调用
-componentDidUpdate			初始化渲染不会调用，更新后调用
-#####  组件卸载：
-componentWillUnmount			组件移除前调用（例如清除内存，解除事件的监听） 
+#### BASH
+>执行时机：
+>Mount：已插入真实 DOM；Update：正在被重新渲染；Unmount：已移出真实 DOM
+
+>两种类型处理函数：
+>will 函数在进入状态之前调用，did 函数在进入状态之后调用
+
+>两个特殊状态处理函数:
+>componentWillReceiveProps(object nextProps)：已加载组件收到新的参数时调用
+>shouldComponentUpdate(object nextProps, object nextState)：组件判断是否重新渲染时调用
+
+#### 7个生命周期方法：
+	组件挂载：
+	componentWillMount			渲染前调用一次，这个时候DOM结构还没有渲染
+	componentDidMount			渲染完成后调用一次，这个时候DOM结构已经渲染了
+	组件更新：
+	*componentWillReceiveProps	初始化渲染不会调用，在接收到新的props时，会调用这个方法
+	*shouldComponentUpdate		初始化渲染不会调用，接收到新的props或state时调用
+	componentWillUpdate		初始化渲染不会调用，更新前调用
+	componentDidUpdate			初始化渲染不会调用，更新后调用
+	组件卸载：
+	componentWillUnmount		组件移除前调用（例如清除内存，解除事件的监听） 
 
 通俗讲，React 将组件在web中的形成、修改和渲染等划分为若干个阶段，组成组件的生命周期。在一个完整的生命周期内，一个组件会经过若干个阶段，在特殊的阶段组件会调用一个特别的生命周期方法。如下：
-	1. constructor(props)
-	2. componentWillMount()
-	3. render()
-	4. componentDidMount()
-	5. componentWillReceiveProps(nextProps)
-	6. shouldComponentUpdate(nextProps, nextState)
-	7. componentWillUpdate(nextProps, nextState)
-	8. render( )
-	9. componentDidUpdate(prevProps, prevState )
-	10. componentWillUnmount( )
+>1. constructor(props)
+>2. componentWillMount()
+>3. render()
+>4. componentDidMount()
+>5. componentWillReceiveProps(nextProps)
+>6. shouldComponentUpdate(nextProps, nextState)
+>7. componentWillUpdate(nextProps, nextState)
+>8. render( )
+>9. componentDidUpdate(prevProps, prevState )
+>10. componentWillUnmount( )
 
 
 ###  事件
