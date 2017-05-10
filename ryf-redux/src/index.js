@@ -1,12 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { createStore } from 'redux'
-import Counter from './components/Counter'
-import counter from './reducers'
+// import { createStore } from 'redux'
+// import Counter from './components/Counter'
+// import counter from './reducers'
+// import $ from 'jquery'
+var $ = require("jquery")
+import PropTypes from 'prop-types'
 
-import PropTypes from 'prop-types';
-
-const store = createStore(counter)
+// const store = createStore(counter)
 const rootEl = document.getElementById('root')
 
 const names = [123,456,'yiqian'];
@@ -108,14 +109,40 @@ class Hello extends React.Component{
 		super(props);
 		this.state={opacity:1.0}
 	}
-	componentsDidMount(){
-		this.timer = setInterval(()=>{
+	componentDidMount(){
+
+    // console.log(1);
+    // console.log('hello',this.refs)
+    // this.refs.div.appendChild('<div>2333</div>');
+
+		setInterval(()=>{
 			var opa = this.state.opacity;
+
 			opa-=0.05;
+
+      // console.log(opa,this.props);
 			if (opa<0.1) {opa=1.0}
 			this.setState({opacity:opa})
 		},100)
+
+    // this.refs.div.appendChild('<h1></h1>');
 	}
+
+  componentWillReceiveProps(nextProps){
+    //接收的颜色 与 当前颜色不同时
+    if (this.props.color !== nextProps.color){
+      console.log('red')
+    }
+  }
+
+  //  componentDidMount(){
+  //   //将会触发组件重新渲染
+  //   this.setState({
+  //     opacity: 0.4
+  //   })
+  //   //对节点进行操作
+  //   this.refs.div.appendChild('<h1>hhhh</h1>');
+  // }
 	render(){
 		return(
 			<div style={{opacity:this.state.opacity}}>
@@ -170,12 +197,238 @@ class App extends React.Component {
   }
 }
 
+class A extends React.Component{
+  constructor(props){
+    super(props)
+    this.state={init:false,data:[]}
+    console.log(this.state.data)
+    this.asynFetch = this.asynFetch.bind(this)
+  }
+  // mock asyn fetch
+  asynFetch(callback){
+    setTimeout(
+      function(){callback([1,2,3])},3000
+    )
+  }
+
+  componentWillMount() {  
+        this.setState({init:true})          
+        console.log('A componentWillMount');
+  }
+  
+  componentDidMount() {
+        this.setState({init:false},function() {
+          console.log('callback: '+this.state.init)
+        })
+        console.log('A componentDidMount '+this.state.init );
+        
+        this.asynFetch((data)=>{
+          this.setState({data:data})
+        })
+  }
+  
+  render() {
+        console.log('A render '+this.state.init);
+        let data = this.state.data;
+        return (
+          data.length?
+            <ul>
+              {this.state.data.map(e=><li key={e}>{e}</li>)}
+            </ul>
+            :
+            <div>loading data ...</div>
+        )  
+  }
+}
 
 
-// let data = "abc";
+
+//组件嵌套
+class Child extends React.Component{
+    constructor(props){
+      super(props)
+      this.state={show:false}
+      console.log('00','Child constructor','props:',props,'state:',this.state)
+    }
+  
+    shouldComponentUpdate (nextProps, nextState) {
+        console.log('A shouldComponentUpdate');
+        return true;//返回值决定是否更新
+    }
+
+    componentWillUpdate() {
+        console.log('A componentWillUpdate');
+    }
+    componentDidUpdate() {
+        console.log('A componentDidUpdate');
+    }
+
+    componentWillMount() {
+        console.log('11','Child componentWillMount','props:',this.props,'state:',this.state)
+    }
+    componentDidMount() {
+        console.log('33','Child componentDidMount','props:',this.props,'state:',this.state);
+    }
+    componentWillReceiveProps(nextProps) {
+        console.log('44','This child componentWillReceiveProps',this.props,'state:',this.state, 'nextProps:',nextProps);
+        if (this.props.name!==nextProps.name) {
+          this.setState({show:true})
+        }
+    }
+    render() {
+        console.log('22','Child render','props:',this.props,'state:',this.state);
+        return (
+                this.state.show?
+                <div>{this.props.name}</div>
+                :
+                <div>null</div>
+        )
+    }
+};
+
+class Parent extends React.Component{
+    constructor(props){
+      super(props)
+      this.state={name:'xxx'}
+      console.log('0','Parent constructor','props:',props,'state:',this.state)
+    }
+   
+    componentWillMount() {        
+      console.log('1','Parent componentWillMount','props:',this.props,'state:',this.state)
+
+    }
+  
+    componentDidMount() {
+        console.log('<3','Parent componentDidMount','props:',this.props,'state:',this.state)
+        // this.setState({name:'ZZZ'},()=>{
+        //     console.log('>3','Parent componentDidMount','props:',this.props,'state:',this.state)
+
+        // })
+        setTimeout(()=>{
+          this.setState({name:'ZZZ'})
+          console.log('=3','Parent componentDidMount','props:',this.props,'state:',this.state)
+        },3000)
+        // console.log('>3','Parent componentDidMount','props:',this.props,'state:',this.state)
+    }
+    render() {
+        console.log('2','Parent render','props:',this.props,'state:',this.state)
+        return <Child name={this.state.name}/>
+    }
+};
+
+// ajax
+class UserGist extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {username:'',lastGistUrl:''}
+  }
+  componentDidMount(){
+      this.server = $.get(this.props.source, function(result) {
+      var lastGist = result[0];        
+
+      this.setState({
+          username: lastGist.owner.login,
+          lastGistUrl: lastGist.html_url
+      });
+    }.bind(this));
+  }
+  componentWillUnmount(){
+    this.server.abort();
+  }
+  render(){
+    return(
+      <div>
+        {this.state.username}'s last gist is here [<a href={this.state.lastGistUrl}>{this.state.lastGistUrl}</a>].
+      </div>
+    )
+  }
+}
+
+class B extends React.Component{
+  constructor(props){
+    super(props)
+    this.state={name:'xxx'}
+    this.asynFetch=this.asynFetch.bind(this)
+  }
+  asynFetch(data){
+    setTimeout(()=>{
+      this.setState({name:data})
+    },5000)
+  }
+  componentDidMount() {
+    // this.asynFetch('ZZZ')
+    setTimeout(()=>{
+      this.setState({name:'ZZZ'})
+    },3000)
+  }
+  
+  componentWillReceiveProps(nextProps) {
+        console.log('This componentWillReceiveProps');
+  }
+  render(){
+    return(
+      <div name={this.state.name}>{this.state.name}</div>
+      )
+  }
+}
+
+
+
+//promise
+class RepoList extends React.Component{
+  constructor(props) {
+    super(props)
+    this.state = {
+      loading: true,
+      error: null,
+      data: null
+    };
+  }
+  componentDidMount() {
+    this.props.promise.then(
+      value => this.setState({loading: false, data: value}),
+      error => this.setState({loading: false, error: error}));
+  }
+
+  render() {
+    if (this.state.loading) {
+      return <span>Loading...</span>;
+    }
+    else if (this.state.error !== null) {
+      return <span>Error: {this.state.error.message}</span>;
+    }
+    else {
+      var repos = this.state.data.items;
+      var repoList = repos.map(function (repo, index) {
+        return (
+          <li key={index}><a href={repo.html_url}>{repo.name}</a> ({repo.stargazers_count} stars) <br/> {repo.description}</li>
+        );
+      });
+      return (
+        <main>
+          <h1>Most Popular JavaScript Projects in Github</h1>
+          <ol>{repoList}</ol>
+        </main>
+      );
+    }
+  }
+}
+
+
+
+
 
 const render = () => ReactDOM.render(
 <div>
+  This is B:
+  <B />
+
+  <UserGist source="https://api.github.com/users/octocat/gists" />
+
+  <RepoList promise={$.getJSON('https://api.github.com/search/repositories?q=javascript&sort=stars')} />
+
+  <p></p>
+
   demo01:
   <h1>hello,world!</h1>
 
@@ -205,19 +458,19 @@ const render = () => ReactDOM.render(
 
   <LikeButton />
 
-  <Hello name="yiqian" />
+  <Hello name="生命周期函数" />
 
   <App />
 
-  <Counter
-    value={store.getState()}
-    onIncrement={() => store.dispatch({ type: 'INCREMENT' })}
-    onDecrement={() => store.dispatch({ type: 'DECREMENT' })}
-  />
+  
+
+  <Parent />
+  
+
  </div>,
   rootEl
 )
 
 render()
 
-store.subscribe(render)
+// store.subscribe(render)
